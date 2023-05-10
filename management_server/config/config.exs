@@ -23,8 +23,28 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Configures Guarnian
+config :management_server, ManagementServerWeb.Auth.Guardian,
+  issuer: "management_server",
+  secret_key: "NVJODEewQv/7wHAvoeoULFATjtEa15D3hv91cTlh4MxGslQt5Pznbp/0camTe3Ew"
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :guardian, Guardian.DB,
+  repo: ManagementServer.Repo,
+  schema_name: "guardian_tokens",
+  sweep_interval: 60
+
+config :management_server, :phoenix_swagger,
+  swagger_files: %{
+    "priv/static/swagger.json" => [
+      router: ManagementServerWeb.Router,
+      endpoint: ManagementServerWeb.Endpoint
+    ]
+  }
+
+config :phoenix_swagger, json_library: Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
