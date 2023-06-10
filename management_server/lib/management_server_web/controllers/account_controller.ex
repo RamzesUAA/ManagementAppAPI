@@ -4,6 +4,7 @@ defmodule ManagementServerWeb.AccountController do
 
   alias ManagementServerWeb.{Auth.Guardian, Auth.ErrorResponse}
   alias ManagementServer.{Accounts, Accounts.Account, Users, Users.User}
+  alias ManagementServer.UsersRoles
 
   import ManagementServerWeb.Auth.AuthorizedPlug
   import Plug.Conn.Status, only: [code: 1]
@@ -63,8 +64,9 @@ defmodule ManagementServerWeb.AccountController do
 
   def create(conn, %{"account" => account_params}) do
     with {:ok, %Account{} = account} <- Accounts.create_account(account_params),
-         {:ok, %User{} = _user} <- Users.create_user(account, account_params) do
-      authorize_account(conn, account.email, account_params["hash_password"])
+         {:ok, %User{} = user} <- Users.create_user(account, account_params),
+         {:ok, _role} <- UsersRoles.create_user_role(user.id, account_params["role_id"]) do
+      render(conn, "account.json", account: account)
     end
   end
 

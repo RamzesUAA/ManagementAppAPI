@@ -47,7 +47,8 @@ defmodule ManagementServer.MixProject do
       {:bcrypt_elixir, "~> 3.0"},
       {:phoenix_swagger, "~> 0.8.2"},
       {:ex_json_schema, "~> 0.7.1"},
-      {:cors_plug, "~> 3.0"}
+      {:cors_plug, "~> 3.0"},
+      {:mox, "~> 1.0", only: :test}
     ]
   end
 

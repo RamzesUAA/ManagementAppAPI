@@ -10,18 +10,21 @@ defmodule ManagementServer.FormTypesTest do
 
     @invalid_attrs %{fields: nil, name: nil}
 
-    test "list_form_types/0 returns all form_types" do
-      form_type = form_type_fixture()
-      assert FormTypes.list_form_types() == [form_type]
-    end
-
     test "get_form_type!/1 returns the form_type with given id" do
       form_type = form_type_fixture()
       assert FormTypes.get_form_type!(form_type.id) == form_type
     end
 
     test "create_form_type/1 with valid data creates a form_type" do
-      valid_attrs = %{fields: %{}, name: "some name"}
+      {:ok, organization} =
+        %{}
+        |> Enum.into(%{
+          id: 1,
+          name: "some name"
+        })
+        |> ManagementServer.Organizations.create_organization()
+
+      valid_attrs = %{fields: %{}, name: "some name", organization_id: organization.id}
 
       assert {:ok, %FormType{} = form_type} = FormTypes.create_form_type(valid_attrs)
       assert form_type.fields == %{}

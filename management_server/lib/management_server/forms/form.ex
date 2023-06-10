@@ -17,6 +17,7 @@ defmodule ManagementServer.Forms.Form do
     )
 
     field(:form_type_id, :binary_id)
+    has_one(:form_type, ManagementServer.FormTypes.FormType)
 
     timestamps()
   end

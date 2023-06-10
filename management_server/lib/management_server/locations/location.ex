@@ -18,6 +18,9 @@ defmodule ManagementServer.Locations.Location do
       type: :integer
     )
 
+    has_many(:location_form, ManagementServer.LocationsForms.LocationForm)
+    has_many(:forms, through: [:location_form, :form])
+
     timestamps()
   end
 

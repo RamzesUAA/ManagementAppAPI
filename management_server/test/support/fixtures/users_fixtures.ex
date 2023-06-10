@@ -8,14 +8,19 @@ defmodule ManagementServer.UsersFixtures do
   Generate a user.
   """
   def user_fixture(attrs \\ %{}) do
-    {:ok, user} =
+    organization = ManagementServer.OrganizationsFixtures.organization_fixture()
+    account = ManagementServer.AccountsFixtures.account_fixture()
+
+    attrs =
       attrs
       |> Enum.into(%{
         biography: "some biography",
         full_name: "some full_name",
-        gender: "some gender"
+        gender: "some gender",
+        organization_id: organization.id
       })
-      |> ManagementServer.Users.create_user()
+
+    {:ok, user} = ManagementServer.Users.create_user(account, attrs)
 
     user
   end

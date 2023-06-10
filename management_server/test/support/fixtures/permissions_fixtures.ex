@@ -8,10 +8,13 @@ defmodule ManagementServer.PermissionsFixtures do
   Generate a permission.
   """
   def permission_fixture(attrs \\ %{}) do
+    organization = ManagementServer.OrganizationsFixtures.organization_fixture()
+
     {:ok, permission} =
       attrs
       |> Enum.into(%{
-        permission_name: "some permission_name"
+        permission_name: "some permission_name",
+        organization_id: organization.id
       })
       |> ManagementServer.Permissions.create_permission()
 

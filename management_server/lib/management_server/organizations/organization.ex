@@ -7,6 +7,8 @@ defmodule ManagementServer.Organizations.Organization do
   schema "organizations" do
     field(:name, :string)
 
+    has_many(:roles, ManagementServer.Roles.Role)
+
     timestamps()
   end
 

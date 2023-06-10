@@ -6,132 +6,59 @@ defmodule ManagementServer.Locations do
   import Ecto.Query, warn: false
   alias ManagementServer.Repo
 
-  alias ManagementServer.Locations.Location
+  alias ManagementServer.{
+    Locations.Location,
+    Forms.Form,
+    FormTypes.FormType,
+    LocationsForms.LocationForm
+  }
 
-  @doc """
-  Returns the list of locations.
-
-  ## Examples
-
-      iex> list_locations()
-      [%Location{}, ...]
-
-  """
   def list_locations(%{assigns: %{account: %{user: %{organization_id: organization_id}}}}) do
-    IO.inspect("##############")
-    IO.inspect(organization_id)
-    IO.inspect("##############")
-    IO.inspect("##############")
-
     Location
     |> where([l], l.organization_id == ^organization_id)
     |> Repo.all()
-
-    # query = build_query(params)
-    # Repo.all(query)
   end
 
-  # defp build_query(params) do
-  #   query = from l in Location
+  def get_location!(id) do
+    result =
+      Location
+      |> where([l], l.id == ^id)
+      |> Repo.one()
 
-  #   # Add dynamic filters based on params
-  #   query =
-  #     Enum.reduce(params, query, fn {key, value}, acc ->
-  #       case String.trim(value) do
-  #         "" -> acc # Ignore empty values
-  #         _ -> add_filter(acc, key, value)
-  #       end
-  #     end)
+    location_forms =
+      LocationForm
+      |> join(:inner, [lf], f in assoc(lf, :form))
+      |> join(:inner, [lf, f], ft in FormType, on: ft.id == f.form_type_id)
+      |> where([lf, f], lf.location_id == ^id)
+      |> select([lf, f, ft], %{
+        id: f.id,
+        name: f.name,
+        form_type_id: ft.id,
+        form_type_name: ft.name,
+        form_type_label: ft.label
+      })
+      |> Repo.all()
+      |> Enum.group_by(& &1.form_type_label)
 
-  #   query
-  # end
+    Map.put(result, :forms, location_forms)
+  end
 
-  # defp add_filter(query, key, value) do
-  #   case key do
-  #     "organization_id" -> where(query, ilike: ^("%#{value}%"), field(l, :organization_id))
-  #     "city" -> where(query, ilike: ^("%#{value}%"), field(l, :city))
-  #     # Add more filters as needed
-  #     _ -> query
-  #   end
-  # end
-
-  @doc """
-  Gets a single location.
-
-  Raises `Ecto.NoResultsError` if the Location does not exist.
-
-  ## Examples
-
-      iex> get_location!(123)
-      %Location{}
-
-      iex> get_location!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_location!(id), do: Repo.get!(Location, id)
-
-  @doc """
-  Creates a location.
-
-  ## Examples
-
-      iex> create_location(%{field: value})
-      {:ok, %Location{}}
-
-      iex> create_location(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_location(attrs \\ %{}) do
     %Location{}
     |> Location.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a location.
-
-  ## Examples
-
-      iex> update_location(location, %{field: new_value})
-      {:ok, %Location{}}
-
-      iex> update_location(location, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_location(%Location{} = location, attrs) do
     location
     |> Location.changeset(attrs)
     |> Repo.update()
   end
 
-  @doc """
-  Deletes a location.
-
-  ## Examples
-
-      iex> delete_location(location)
-      {:ok, %Location{}}
-
-      iex> delete_location(location)
-      {:error, %Ecto.Changeset{}}
-
-  """
   def delete_location(%Location{} = location) do
     Repo.delete(location)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking location changes.
-
-  ## Examples
-
-      iex> change_location(location)
-      %Ecto.Changeset{data: %Location{}}
-
-  """
   def change_location(%Location{} = location, attrs \\ %{}) do
     Location.changeset(location, attrs)
   end

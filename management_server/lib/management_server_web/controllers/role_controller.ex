@@ -1,8 +1,8 @@
 defmodule ManagementServerWeb.RoleController do
   use ManagementServerWeb, :controller
 
-  alias ManagementServer.Roles
-  alias ManagementServer.Roles.Role
+  alias ManagementServer.{Roles, Permissions}
+  alias ManagementServer.{Roles.Role, Permissions.Permission}
 
   action_fallback(ManagementServerWeb.FallbackController)
 
@@ -11,8 +11,10 @@ defmodule ManagementServerWeb.RoleController do
     render(conn, "index.json", roles: roles)
   end
 
-  def create(conn, %{"role" => role_params}) do
-    with {:ok, %Role{} = role} <- Roles.create_role(role_params) do
+  def create(conn, %{"role" => role_params, "permissions" => permission_params}) do
+    with {:ok, %Role{} = role} <- Roles.create_role(role_params),
+         {:ok, permissions} <-
+           Permissions.create_permission(permission_params, role) do
       conn
       |> put_status(:created)
       |> render("show.json", role: role)

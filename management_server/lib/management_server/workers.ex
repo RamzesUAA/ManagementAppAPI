@@ -40,8 +40,6 @@ defmodule ManagementServer.Workers do
     |> where([d], d.id == ^id)
     |> Repo.one()
     |> Repo.preload(location_workers: :location)
-
-    # |> Repo.preload(:locations)
   end
 
   @doc """

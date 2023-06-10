@@ -22,7 +22,8 @@ defmodule ManagementServerWeb.AccountView do
     %{
       id: account.id,
       email: account.email,
-      user: render_one(account.user, UserView, "user.json")
+      user: render_one(account.user, UserView, "user.json"),
+      permissions: account.permissions
     }
   end
 

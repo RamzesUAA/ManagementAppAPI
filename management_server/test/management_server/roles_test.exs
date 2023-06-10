@@ -21,7 +21,15 @@ defmodule ManagementServer.RolesTest do
     end
 
     test "create_role/1 with valid data creates a role" do
-      valid_attrs = %{name: "some name"}
+      {:ok, organization} =
+        %{}
+        |> Enum.into(%{
+          id: 1,
+          name: "some name"
+        })
+        |> ManagementServer.Organizations.create_organization()
+
+      valid_attrs = %{name: "some name", organization_id: organization.id}
 
       assert {:ok, %Role{} = role} = Roles.create_role(valid_attrs)
       assert role.name == "some name"

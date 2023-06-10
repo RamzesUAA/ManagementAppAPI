@@ -22,6 +22,21 @@ defmodule ManagementServer.Organizations do
   end
 
   @doc """
+  Returns the list of organizations with roles.
+
+  ## Examples
+
+      iex> list_organizations()
+      [%Organization{}, ...]
+
+  """
+  def list_organizations_with_roles do
+    Organization
+    |> Repo.all()
+    |> Repo.preload([:roles])
+  end
+
+  @doc """
   Gets a single organization.
 
   Raises `Ecto.NoResultsError` if the Organization does not exist.

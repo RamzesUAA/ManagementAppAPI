@@ -39,13 +39,20 @@ defmodule ManagementServerWeb.Router do
 
   scope "/api", ManagementServerWeb do
     pipe_through([:api, :auth])
+    get("/accounts", AccountController, :index)
     get("/accounts/current", AccountController, :current_account)
     get("/accounts/sign_out", AccountController, :sign_out)
     get("/accounts/refresh_session", AccountController, :refresh_session)
     post("/accounts/update", AccountController, :update)
 
+    get("/users", UserController, :index)
     put("/users/update", UserController, :update)
     post("/users/create", UserController, :create)
+
+    get("/roles", RoleController, :index)
+
+    get("/organizations", OrganizationController, :index)
+    get("/organizations_roles", OrganizationController, :organizations_with_roles)
 
     get("/locations", LocationController, :index)
     get("/locations/:id", LocationController, :show)
@@ -76,34 +83,11 @@ defmodule ManagementServerWeb.Router do
     post("/form_types", FormTypeController, :create)
     delete("/form_types/:id", FormTypeController, :delete)
     put("/form_types/:id", FormTypeController, :update)
-  end
 
-  def swagger_info do
-    %{
-      schemes: ["http", "https", "ws", "wss"],
-      info: %{
-        version: "1.0",
-        title: "MyAPI",
-        description: "API Documentation for MyAPI v1",
-        termsOfService: "Open for public",
-        contact: %{
-          name: "Roman Alberda",
-          email: "ramzesball@gmail.com"
-        }
-      },
-      securityDefinitions: %{
-        Bearer: %{
-          type: "apiKey",
-          name: "Authorization",
-          description: "API Token must be provided via `Authorization: Bearer ` header",
-          in: "header"
-        }
-      },
-      consumes: ["application/json"],
-      produces: ["application/json"],
-      tags: [
-        %{name: "Accounts", description: "Account resources"}
-      ]
-    }
+    get("/payments", PaymentController, :index)
+    get("/payments/:id", PaymentController, :show)
+    post("/payments", PaymentController, :create)
+    delete("/payments/:id", PaymentController, :delete)
+    put("/payments/:id", PaymentController, :update)
   end
 end

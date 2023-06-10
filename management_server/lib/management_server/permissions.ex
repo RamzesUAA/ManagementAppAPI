@@ -49,10 +49,16 @@ defmodule ManagementServer.Permissions do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_permission(attrs \\ %{}) do
-    %Permission{}
-    |> Permission.changeset(attrs)
-    |> Repo.insert()
+  def create_permission(attrs, role) do
+    permissions = attrs["actions"]
+
+    permissions =
+      Enum.map(permissions, fn e ->
+        %{role_id: role.id, permission_name: e, organization_id: role.organization_id}
+      end)
+
+    {count, _} = Repo.insert_all(Permission, permissions)
+    {:ok, count}
   end
 
   @doc """

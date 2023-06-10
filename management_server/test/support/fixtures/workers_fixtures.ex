@@ -8,6 +8,8 @@ defmodule ManagementServer.WorkersFixtures do
   Generate a worker.
   """
   def worker_fixture(attrs \\ %{}) do
+    organization = ManagementServer.OrganizationsFixtures.organization_fixture()
+
     {:ok, worker} =
       attrs
       |> Enum.into(%{
@@ -16,7 +18,8 @@ defmodule ManagementServer.WorkersFixtures do
         email: "some email",
         name: "some name",
         position: "some position",
-        responsibility: "some responsibility"
+        responsibility: "some responsibility",
+        organization_id: organization.id
       })
       |> ManagementServer.Workers.create_worker()
 

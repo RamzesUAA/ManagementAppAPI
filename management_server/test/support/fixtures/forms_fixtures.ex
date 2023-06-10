@@ -8,11 +8,14 @@ defmodule ManagementServer.FormsFixtures do
   Generate a form.
   """
   def form_fixture(attrs \\ %{}) do
+    organization = ManagementServer.OrganizationsFixtures.organization_fixture()
+
     {:ok, form} =
       attrs
       |> Enum.into(%{
         data: %{},
-        name: "some name"
+        name: "some name",
+        organization_id: organization.id
       })
       |> ManagementServer.Forms.create_form()
 

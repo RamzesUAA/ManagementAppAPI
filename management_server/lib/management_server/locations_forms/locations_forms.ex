@@ -13,10 +13,15 @@ defmodule ManagementServer.LocationsForms.LocationForm do
     belongs_to(:location, ManagementServer.Locations.Location)
     belongs_to(:form, ManagementServer.Forms.Form)
 
+    belongs_to(:organization, ManagementServer.Organizations.Organization,
+      foreign_key: :organization_id,
+      type: :integer
+    )
+
     timestamps()
   end
 
-  @required_params ~w(location_id form_id)a
+  @required_params ~w(location_id form_id organization_id)a
   @optional_params ~w()a
 
   def changeset(model = %LocationForm{}, attrs \\ %{}) do

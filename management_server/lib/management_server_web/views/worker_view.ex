@@ -11,18 +11,14 @@ defmodule ManagementServerWeb.WorkerView do
     %{data: render_one(worker, WorkerView, "worker.json")}
   rescue
     exception ->
-      IO.inspect("CCCCCCCcc")
-
-      IO.inspect(exception)
+      nil
   end
 
   def render("show_with_locations.json", %{worker: worker}) do
     %{data: render_one(worker, WorkerView, "worker_locations.json")}
   rescue
     exception ->
-      IO.inspect("CCCCCCCcc")
-
-      IO.inspect(exception)
+      nil
   end
 
   def render("worker.json", %{worker: worker}) do

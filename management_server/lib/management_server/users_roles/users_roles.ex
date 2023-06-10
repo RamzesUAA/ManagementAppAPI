@@ -10,8 +10,15 @@ defmodule ManagementServer.UsersRoles.UserRole do
   @timestamps_opts [type: :utc_datetime_usec]
 
   schema "users_roles" do
-    belongs_to(:user, ManagementServer.Users.User)
-    belongs_to(:role, ManagementServer.Roles.Role)
+    belongs_to(:user, ManagementServer.Users.User,
+      foreign_key: :user_id,
+      type: :binary_id
+    )
+
+    belongs_to(:role, ManagementServer.Roles.Role,
+      foreign_key: :role_id,
+      type: :binary_id
+    )
 
     timestamps()
   end

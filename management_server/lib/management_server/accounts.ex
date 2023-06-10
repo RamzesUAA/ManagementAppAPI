@@ -6,7 +6,12 @@ defmodule ManagementServer.Accounts do
   import Ecto.Query, warn: false
   alias ManagementServer.Repo
 
-  alias ManagementServer.Accounts.Account
+  alias ManagementServer.{
+    Accounts.Account,
+    Roles.Role,
+    UsersRoles.UserRole,
+    Permissions.Permission
+  }
 
   @doc """
   Returns the list of accounts.
@@ -38,10 +43,38 @@ defmodule ManagementServer.Accounts do
   def get_account!(id), do: Repo.get!(Account, id)
 
   def get_full_account!(id) do
-    Account
-    |> where(id: ^id)
-    |> Repo.one()
-    |> Repo.preload([:user])
+    account =
+      Account
+      |> where(id: ^id)
+      |> Repo.one()
+      |> Repo.preload([:user])
+
+    roles =
+      UserRole
+      |> join(:inner, [ur], r in assoc(ur, :role))
+      |> join(:inner, [ur, r], p in Permission, on: r.id == p.role_id)
+      |> where([ur, r, p], ur.user_id == ^account.user.id)
+      |> select([ur, r, p], %{
+        id: r.id,
+        name: r.name,
+        permission_id: p.id,
+        permission_name: p.permission_name
+      })
+      |> Repo.all()
+
+    permissions =
+      roles
+      |> Enum.group_by(&{&1.id, &1.name}, fn %{permission_id: pid, permission_name: pname} ->
+        %{permission_id: pid, permission_name: pname}
+      end)
+      |> Enum.map(fn {{role_id, role_name}, permissions} ->
+        %{role_id: role_id, role_name: role_name, permissions: permissions}
+      end)
+
+    Map.put(account, :permissions, permissions)
+  rescue
+    e ->
+      e
   end
 
   @doc """

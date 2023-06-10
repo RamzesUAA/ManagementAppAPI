@@ -19,6 +19,11 @@ defmodule ManagementServerWeb.OrganizationController do
     render(conn, "index.json", organizations: organizations)
   end
 
+  def organizations_with_roles(conn, _params) do
+    organizations = Organizations.list_organizations_with_roles()
+    render(conn, "orgs_with_roles.json", organizations: organizations)
+  end
+
   def create(conn, %{"organization" => organization_params}) do
     with {:ok, %Organization{} = organization} <-
            Organizations.create_organization(organization_params) do

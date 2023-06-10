@@ -11,7 +11,7 @@ defmodule ManagementServer.AccountsFixtures do
     {:ok, account} =
       attrs
       |> Enum.into(%{
-        email: "some email",
+        email: "test@example.com",
         hash_password: "some hash_password"
       })
       |> ManagementServer.Accounts.create_account()

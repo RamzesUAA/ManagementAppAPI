@@ -11,6 +11,8 @@ Workers - mix phx.gen.json Workers Worker workers name:string organization_id:re
 
 Events - mix phx.gen.json Events Event events title:string start:utc_datetime end:utc_datetime allDay:boolean organization_id:references:organizations user_id:references:users
 
+Payments - mix phx.gen.json Payments Payment payments name:string description:string status:string ammount:decimal priority:integer organization_id:references:organizations assigned_user_id:references:users assignee_user_id:references:users
+
 LocationsWorker - mix ecto.gen.migration
 
 Generate migrations - mix phx.gen.migrations

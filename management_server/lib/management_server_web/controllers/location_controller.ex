@@ -25,7 +25,7 @@ defmodule ManagementServerWeb.LocationController do
 
   def show(conn, %{"id" => id}) do
     location = Locations.get_location!(id)
-    render(conn, "show.json", location: location)
+    render(conn, "show_with_forms.json", location: location)
   end
 
   def update(conn, %{"id" => id, "location" => location_params}) do

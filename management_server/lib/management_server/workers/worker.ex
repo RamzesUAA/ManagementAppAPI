@@ -40,5 +40,6 @@ defmodule ManagementServer.Workers.Worker do
     ])
     |> validate_required([:name, :email, :age, :position, :responsibility, :description])
     |> unique_constraint(:email)
+    |> foreign_key_constraint(:location_workers, name: "locations_workers_worker_id_fkey")
   end
 end

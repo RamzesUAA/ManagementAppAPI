@@ -9,7 +9,19 @@ defmodule ManagementServer.Users do
   alias ManagementServer.Users.User
 
   def list_users do
-    Repo.all(User)
+    User
+    |> join(:inner, [u], a in assoc(u, :account))
+    |> join(:inner, [u, a], o in assoc(u, :organization))
+    |> select([u, a, o], %{
+      id: u.id,
+      full_name: u.full_name,
+      gender: u.gender,
+      email: a.email,
+      biography: u.biography,
+      organization_id: o.id,
+      organization_name: o.name
+    })
+    |> Repo.all()
   end
 
   @doc """

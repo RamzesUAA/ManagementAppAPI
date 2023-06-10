@@ -9,8 +9,16 @@ defmodule ManagementServer.Permissions.Permission do
 
   schema "permissions" do
     field(:permission_name, :string)
-    field(:organization_id, :binary_id)
-    field(:role_id, :binary_id)
+
+    belongs_to(:organization, ManagementServer.Organizations.Organization,
+      foreign_key: :organization_id,
+      type: :integer
+    )
+
+    belongs_to(:role, ManagementServer.Roles.Role,
+      foreign_key: :role_id,
+      type: :binary_id
+    )
 
     timestamps()
   end
@@ -18,7 +26,7 @@ defmodule ManagementServer.Permissions.Permission do
   @doc false
   def changeset(permission, attrs) do
     permission
-    |> cast(attrs, [:permission_name])
+    |> cast(attrs, [:permission_name, :organization_id, :role_id])
     |> validate_required([:permission_name])
   end
 end

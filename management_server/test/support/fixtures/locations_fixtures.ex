@@ -8,12 +8,15 @@ defmodule ManagementServer.LocationsFixtures do
   Generate a location.
   """
   def location_fixture(attrs \\ %{}) do
+    organization = ManagementServer.OrganizationsFixtures.organization_fixture()
+
     {:ok, location} =
       attrs
       |> Enum.into(%{
         address: "some address",
         location: %{},
-        name: "some name"
+        name: "some name",
+        organization_id: organization.id
       })
       |> ManagementServer.Locations.create_location()
 

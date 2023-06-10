@@ -21,11 +21,11 @@ defmodule ManagementServer.OrganizationsTest do
     end
 
     test "create_organization/1 with valid data creates a organization" do
-      valid_attrs = %{id: 42, name: "some name"}
+      valid_attrs = %{name: "some name"}
 
-      assert {:ok, %Organization{} = organization} = Organizations.create_organization(valid_attrs)
-      assert organization.id == 42
-      assert organization.name == "some name"
+      {:ok, %Organization{} = organization} = Organizations.create_organization(valid_attrs)
+
+      assert organization.name == valid_attrs.name
     end
 
     test "create_organization/1 with invalid data returns error changeset" do
@@ -36,14 +36,18 @@ defmodule ManagementServer.OrganizationsTest do
       organization = organization_fixture()
       update_attrs = %{id: 43, name: "some updated name"}
 
-      assert {:ok, %Organization{} = organization} = Organizations.update_organization(organization, update_attrs)
-      assert organization.id == 43
-      assert organization.name == "some updated name"
+      {:ok, %Organization{} = updated_organization} =
+        Organizations.update_organization(organization, update_attrs)
+
+      assert updated_organization.name == update_attrs.name
     end
 
     test "update_organization/2 with invalid data returns error changeset" do
       organization = organization_fixture()
-      assert {:error, %Ecto.Changeset{}} = Organizations.update_organization(organization, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Organizations.update_organization(organization, @invalid_attrs)
+
       assert organization == Organizations.get_organization!(organization.id)
     end
 

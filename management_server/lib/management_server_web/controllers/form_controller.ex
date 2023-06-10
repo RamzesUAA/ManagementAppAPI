@@ -1,8 +1,8 @@
 defmodule ManagementServerWeb.FormController do
   use ManagementServerWeb, :controller
 
-  alias ManagementServer.Forms
-  alias ManagementServer.Forms.Form
+  alias ManagementServer.{Forms, LocationsForms}
+  alias ManagementServer.{Forms.Form, LocationsForms.LocationForm}
 
   action_fallback(ManagementServerWeb.FallbackController)
 
@@ -13,7 +13,8 @@ defmodule ManagementServerWeb.FormController do
 
   def create(conn = %{assigns: %{organization_id: organization_id}}, %{"form" => form_params}) do
     with form_params <- Map.put(form_params, "organization_id", organization_id),
-         {:ok, %Form{} = form} <- Forms.create_form(form_params) do
+         {:ok, %Form{} = form} <- Forms.create_form(form_params),
+         {:ok, _count} <- LocationsForms.create_location_form(form.id, form_params) do
       conn
       |> put_status(:created)
       |> render("show.json", form: form)

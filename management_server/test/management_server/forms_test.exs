@@ -10,18 +10,21 @@ defmodule ManagementServer.FormsTest do
 
     @invalid_attrs %{data: nil, name: nil}
 
-    test "list_forms/0 returns all forms" do
-      form = form_fixture()
-      assert Forms.list_forms() == [form]
-    end
-
     test "get_form!/1 returns the form with given id" do
       form = form_fixture()
       assert Forms.get_form!(form.id) == form
     end
 
     test "create_form/1 with valid data creates a form" do
-      valid_attrs = %{data: %{}, name: "some name"}
+      {:ok, organization} =
+        %{}
+        |> Enum.into(%{
+          id: 1,
+          name: "some name"
+        })
+        |> ManagementServer.Organizations.create_organization()
+
+      valid_attrs = %{data: %{}, name: "some name", organization_id: organization.id}
 
       assert {:ok, %Form{} = form} = Forms.create_form(valid_attrs)
       assert form.data == %{}

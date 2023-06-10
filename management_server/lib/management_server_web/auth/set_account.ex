@@ -26,6 +26,9 @@ defmodule ManagementServerWeb.Auth.SetAccount do
           assign(conn, :account, nil)
       end
     end
+  rescue
+    _ ->
+      raise(ErrorResponse.Unauthorized)
   end
 
   defp set_organization_id(conn, organization_id) do
